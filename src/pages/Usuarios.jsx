@@ -7,7 +7,7 @@ import { obtenerUsuarios, getToken } from 'utils/api';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-const baseURL = 'https://calm-retreat-82606.herokuapp.com/';
+const baseURL = 'https://agile-temple-49239.herokuapp.com/';
 
 const Usuarios = () => {
     const [mostrarTabla, setMostrarTabla] = useState(true);

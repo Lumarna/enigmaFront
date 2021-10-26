@@ -6,7 +6,7 @@ import { Dialog, Tooltip } from '@material-ui/core';
 import { obtenerVentas, crearVenta, obtenerProductosV, obtenerUsuariosV, getToken } from 'utils/api';
 import 'react-toastify/dist/ReactToastify.css';
 
-const baseURL = 'https://calm-retreat-82606.herokuapp.com/';
+const baseURL = 'https://agile-temple-49239.herokuapp.com/';
 
 const Ventas = () => {
   const [mostrarTabla, setMostrarTabla] = useState(true);

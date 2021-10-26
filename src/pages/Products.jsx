@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import PrivateComponent from 'components/PrivateComponent';
 
 
-const baseURL = 'https://calm-retreat-82606.herokuapp.com/';
+const baseURL = 'https://agile-temple-49239.herokuapp.com/';
 
 const Productos = () => {
   const [mostrarTabla, setMostrarTabla] = useState(true);
