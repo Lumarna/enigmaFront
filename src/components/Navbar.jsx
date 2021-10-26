@@ -1,38 +1,28 @@
-import React from 'react'
-import logo from 'media/img/Logo2.png'
-import { Link } from 'react-router-dom';
+import React from 'react';
+import ImagenLogo from './ImagenLogo';
+//import TriggerDarkMode from './TriggerDarkMode';
 import { useAuth0 } from '@auth0/auth0-react';
 
+//import Particles from "react-particles-js"
+
 const Navbar = () => {
-  const { logout } = useAuth0();
-  const cerrarsesion =()=>{
-    logout({ returnTo: 'https://glacial-ridge-39017.herokuapp.com/' });
-    localStorage.setItem('token',null);
-  }
-    return (
-      <div className="bg-gray-200 flex p-1 shadow-sm sticky top-0" >
-      <Link to="/Home">
-        <img className="-ml-4" src={logo} />
-      </Link>
-      <div className="flex-grow">
-         
-        </div>
+  const { loginWithRedirect } = useAuth0();
+  return (
+    <nav className='bg-gray-500'>
+      <ul className='flex w-full justify-between my-3'>
+        <li><ImagenLogo /></li>
         
-          <div className='buscar mt-2 p-2 ' >
-            <input placeholder='Buscar  '  />
-            <i className='mt-1 fas fa-search botonGenerico iconoBusqueda'></i>
-          </div>
-        
+        <li className='px-3'>
+          <button
+            onClick={() => loginWithRedirect()}
+            className='bg-indigo-500 p-2 text-white rounded-lg shadow-md hover:bg-indigo-700'
+          >
+            Iniciar Sesión
+          </button>
+        </li>
+      </ul>
+    </nav>
+  );
+};
 
-        <button className="mx-4 " name="ayuda">
-          ayuda
-        </button>
-        <button className="w-14 text-blue-600 rounded-lg  border-2 border-blue-600 hover:border-gray-300 mx-4 p-2" name="perfil"
-        onClick={() => cerrarsesion()}>
-         cerrar sesion
-        </button>
-      </div>
-    );
-}   
-
-export default Navbar
+export default Navbar;

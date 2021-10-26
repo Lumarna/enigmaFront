@@ -1,67 +1,66 @@
-import React, { useEffect, useState }  from 'react';
-import Navbar from 'components/Navbar'
-import Sidebar from 'components/Sidebar'
-import { useAuth0 } from "@auth0/auth0-react";
+import Sidebar from 'components/Sidebar';
+import React, { useEffect, useState } from 'react';
+import SidebarResponsive from 'components/SidebarResponsive';
+import { useAuth0 } from '@auth0/auth0-react';
 import ReactLoading from 'react-loading';
-import { obtenerDatosUsuarios } from 'utils/api';
-import { useUser } from 'context/userContext'; 
 
+//import { obtenerDatosUsuario } from 'utils/api';
+//import { useUser } from 'context/userContext';
+import { obtenerDatosUsuario } from 'utils/api';
+import { useUser } from 'context/userContext';
 
 const PrivateLayout = ({ children }) => {
+  const { isAuthenticated, isLoading, loginWithRedirect, getAccessTokenSilently, logout } = useAuth0();
+  const [loadingUserInfotmation,setLoadingUserInfotmation]= useState(false);
+  const {setUserData}=useUser();
+  useEffect(() => {
 
-    const { isAuthenticated, isLoading, getAccessTokenSilently, loginWithRedirect, logout} = useAuth0();
-    const [loadingUserInformation, setLoadingUserInformation] = useState(false); 
-    const { setUserData } = useUser(); 
+    const fetchAuth0Token = async () => {
 
-    useEffect(() => {
-        const fetchAuth0token = async () => {
-            setLoadingUserInformation(true);
-            const access = await getAccessTokenSilently({
-                audience: 'api-autenticacion',
-            });
-            localStorage.setItem('token', access);
-            console.log(access);
-
-            await obtenerDatosUsuarios((response) => {
-                console.log("respuesta de obtener usuarios", response); 
-                setUserData(response.data);
-                setLoadingUserInformation(false);
-            },(err)=>{
-                console.log('error', err);
-                setLoadingUserInformation(false);
-                logout({ returnTo: 'https://pacific-retreat-26412.herokuapp.com/' });
-            }
-
-            );   
-        };
-        if (isAuthenticated) {
-            fetchAuth0token();
+      setLoadingUserInfotmation(true);
+      //1. pedir token a auth0
+      const accessToken= await getAccessTokenSilently({
+        audience: 'apiVentas',
+      });
+      //2. recibir token de auth0
+      localStorage.setItem('token', accessToken);
+      console.log(accessToken);
+      //3. enviarle el token al backen
+      await obtenerDatosUsuario(
+        (response)=>{
+          console.log('response', response);
+          setUserData(response.data);
+          setLoadingUserInfotmation(false);
+        },
+        (err)=>{
+          console.log('err', err);
+          setLoadingUserInfotmation(false);
+          logout({ returnTo: 'https://glacial-ridge-39017.herokuapp.com/admin' });
         }
-    }, [isAuthenticated, getAccessTokenSilently]);
-
-    if (isLoading || loadingUserInformation) {
-        return (
-            <div class="flex justify-center">
-                <ReactLoading type={"cylon"} color={'#21507A'} height={'20%'} width={'20%'} />
-            </div>)
+      );
+    };
+    if (isAuthenticated) {
+      fetchAuth0Token();
     }
-    if (!isAuthenticated) {
-        return loginWithRedirect();
-    }
-    
-    return (
-        <div>
+  }, [isAuthenticated, getAccessTokenSilently, logout, setUserData]);
 
-                <div >
-                    <Navbar />
-                    <div className="flex w-screen h-screen">
-                        <Sidebar />
-                        <main className="flex w-full ">{children}</main>
-                    </div>
-                </div>
+  if (isLoading || loadingUserInfotmation) 
+    return <ReactLoading type='cylon' color='#abc123' height={667} width={375} />;
 
+  if (!isAuthenticated) {
+  return loginWithRedirect();
+  }
+  return (
+      <div className='flex w-screen h-screen'>
+        <div className='flex flex-col lg:flex-row flex-nowrap h-full w-full'>
+          <Sidebar />
+          <SidebarResponsive />
+          <main className='flex w-full  overflow-y-scroll items-center justify-center'>
+            {children}
+          </main>
         </div>
-    )
-}
+      </div>
+  );
+};
 
-export default PrivateLayout
+export default PrivateLayout;
